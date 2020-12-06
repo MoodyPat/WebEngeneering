@@ -1,0 +1,119 @@
+* ----------------------------------------------------------------------------
+   Base Default Setting
+------------------------------------------------------------------------------*/
+* {margin:0;padding:0}
+* {box-sizing: border-box;margin:0;padding:0;}
+header,footer {color: white;  background-color: black; padding:1em;width:100%;}
+nav,header {width:100%;}
+/* a nice card layout (as modern frameworks show as well)                     */
+.card {background-color: white; border-radius: 5px; margin:10px;
+       box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);padding:1rem;}
+/* -----------------------------------------------------------------------------
+  Define the viewport (visible page) as CSS Grid
+  The Grid consists of the Header, the Navigation ,
+  the scrollable Part (youTube, Fakultäten) and the footer
+  In this case the Grid has four rows (height = auto) and 1 column with a
+  width of 100 %
+  The Header, the youTube and the Fakultäten become a flexbox
+  ----------------------------------------------------------------------------  */
+.pagegridcontainer {display:grid;
+    grid-template-columns: 100%;
+    grid-template-rows: auto;
+    justify-items: stretch;
+    align-items: stretch;
+  }
+  .pagegridheader {grid-area: 1 / 1 / span 1 / span 1}
+  .pagegridnavigation {grid-area: 2 / 1 / span 1 / span 1}
+  .pagegridsrcol  {grid-area: 3 / 1 / span 1 / span 1}
+  .pagegridsfooter  {grid-area: 4 / 1 / span 1 / span 1}
+/* -----------------------------------------------------------------------------
+   The following statements are examples of flex-box classes, of course you can
+   build your own
+-------------------------------------------------------------------------------- */
+    .flexboxheader,.flexboxnav,.flexFakultaet {display:flex; flex-flow: row wrap;}
+    .flexboxheader,.flexFakultaet {justify-content: space-between; align-items: center;}
+    .flexFakultaet {justify-content: space-between; align-items: stretch;}
+    .flexboxnav {justify-content: flex-end;}
+    .flexyouTube {flex-flow:column;}
+/*------------------------------------------------------------------------------
+/* Navigation Bar
+-------------------------------------------------------------------------------*/
+.nav-prev {background:darkgrey;}
+.nav-prev::after{clear:both; content:""; display:block;}   /* just take this          */
+.nav-prev li {list-style-type: none; text-align: center;}
+.nav-prev li {min-width:100px;max-width: 450px}
+/* Give each even list item the color #848d9e; and each odd #e2e4e8;            */
+.nav-prev li:nth-child(2n) {background: #848d9e;}
+.nav-prev li:nth-child(2n+1) {background: #e2e4e8;}
+/* Take the rest as it is or modify to improve.. this is up to you              */
+.nav-prev li:hover {background-color:white;}
+.nav-prev li a { text-decoration: none; display:block; padding:1.2rem; color: yellow; font-weight: bold;}
+.nav.prev a:visited { color: blue;}
+.nav.prev a:hover, a:active, a:focus { color: darkred;  text-decoration: none;}
+/* -----------------------------------------------------------------------------
+YouTube Section
+--------------------------------------------------------------------------------*/
+.youTube  {padding:2rem;background-color: #8282064d}
+/* -----------------------------------------------------------------------------
+Fakultäten
+--------------------------------------------------------------------------------*/
+.Fakultaeten {background-color: white;}
+.FakultaetTitel {font-size:1.8rem;color:white;text-align: center; padding:2rem;width:100%;background-color:#2b0361;}
+.FakultaetBild {min-width:150px;max-width: 300px;}
+.FakultaetBild > img {width:100%;}
+.FakultaetBeschreibung {min-width:150px;max-width: 900px;}
+/* -----------------------------------------------------------------------------
+    some more CSS as part of our JavaScript Executions
+--------------------------------------------------------------------------------*/
+button {background-color: lightgrey; padding:0.7rem; border-radius: 3px;cursor:pointer}
+table {clear:both; margin:10px 2px 10px 2px; border-collapse: collapse;}
+tr:hover{background-color:rgba(20, 20, 58, 0.29);}
+td {border: 2px solid lightgrey;padding:8px}
+.popuplist {background-color: #b2b6b7;margin: 1rem 0 1rem 0;}
+.popuplist>:nth-child(2n) {background-color: #f5f1f1}
+#popupli3 > * {padding:0.1rem;}
+.flexboxheader,.flexpullup,
+                .flexChatbottom,.flexChatheader {display:flex;justify-content: space-between; align-items: center;}
+.chatleft {background-color: #bcc5de; position:relative; left:0px; width: 73%;
+  padding:1em; margin-bottom: 1em;box-shadow: 10px 10px 5px black; border-radius: 5px}
+.chatright {background-color: #859ee4; position:relative; left:25%; width: 73%;
+   padding:1em; margin-bottom: 1em;box-shadow: 10px 10px 5px black; border-radius: 5px}
+.chatOwner {list-style-type: none; padding-left:20px; font-size:0.6rem; font-style: italic; word-wrap: break-word; }
+.chatText {list-style-type: none; padding-left:20px; font-size:1.1rem;  word-wrap: break-word;}
+.chatgridcontainer {display:grid;
+    grid-template-columns: 100%;
+    grid-template-rows: 80px auto 60px;
+    justify-items: stretch;
+    align-items: stretch;
+  }
+  .chatgridheader {grid-area: 1 / 1 / span 1 / span 1}
+  .chatgridmessages {grid-area: 2 / 1 / span 1 / span 1}
+  .chatgridbuttons  {grid-area: 3 / 1 / span 1 / span 1}
+/* MQ for changing the styles a (not the layout !!)
+/* For mobile phones: */
+/* For Handy  10 width to 450 */
+@media only screen and (min-width: 10px) {
+  header span {font-size: 1rem;padding-right:1.0rem}
+  .nav-prev li {width:100%;}
+  .FakultaetBild {width:100%}
+  .FakultaetBeschreibung {width:100%}
+}
+    /* For small  tablets: 450-700  */
+@media only screen and (min-width: 450px) {
+  header span {font-size: 1.2rem;padding-right:1.2rem}
+  .nav-prev li {width:25%;}
+  .FakultaetBild {width:33.33%}
+  .FakultaetBeschreibung {width:60%}
+}
+@media only screen and (min-width: 700px) {
+  header span {font-size: 1.4rem;padding-right:1.5rem}
+  .nav-prev li {width:25%;}
+  .FakultaetBild {width:33.33%}
+  .FakultaetBeschreibung {width:60%}
+}
+@media only screen and (min-width: 1000px) {
+  header span {font-size: 1.6rem;padding-right:2rem}
+  .nav-prev li {width:25%;}
+  .FakultaetBild {width:33.33%}
+  .FakultaetBeschreibung {width:60%}
+}

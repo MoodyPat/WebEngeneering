@@ -1,0 +1,162 @@
+<!doctype html>
+<html lang="de" ng-app="Main">
+<!-- Header/Navbar information -->
+<head> 
+		<meta charset="utf-8"> 
+		<title>DHBW Project - Weather Forecast</title> 
+		<link href="https://fonts.googleapis.com/css?family=Montserrat:400,900" rel="stylesheet">  
+		<!-- Das neueste kompilierte und minimierte CSS --> 
+		<link rel="stylesheet" href="https://getbootstrap.com/docs/4.0/dist/css/bootstrap.min.css"> 
+		<script href="https://getbootstrap.com/docs/4.0/dist/js/bootstrap.min.js"></script> 
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script> 
+		<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+		<script src="https://getbootstrap.com/docs/4.0/dist/js/bootstrap.min.js"></script> 
+		<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.0/angular.min.js"></script>
+		<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD4oZHJJMDE1e54j4uiN_rOT_UKzV4WpWM&callback=setMap"></script>
+		<script src="/js/main.js"></script> 
+		<script src="js/ang_main.js"></script>
+	</head> 
+	<body ng-app="Main">
+		<div ng-include="'htm/navbar.htm'"></div>
+<!-- End of Header/Navbar information -->
+
+		<div ng-controller="WeatherForecast">
+			<div id = "weather" class="container">
+				<div class="card-deck mb-3 text-center">
+					<div id="city_current" class="card mb-4 box-shadow" style="display:none">
+						<div class="card-header">
+							<h3 id="city_cur_text" class="my-0 font-weight-normal">Current city</h3>
+						</div>
+						<div class="card-body">
+							<div id="map" style="width:100%;height:250px;"></div>
+						</div>
+					</div>
+					<div id="city_choose" class="card mb-4 box-shadow">
+						<div class="card-header">
+							<h3  class="my-0 font-weight-normal">Choose a city!</h3>
+						</div>
+						<div class="card-body">
+							<ul class="list-unstyled mt-3 mb-4">
+								<form onsubmit="setCity()">
+									<input type="text" name="city" id="city" value="" />
+								</form>
+							</ul>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div ng-repeat="cur_day in list">
+				<div id = "weather" class="container">
+					<div class="card-deck mb-3 text-center">
+						<div class="card mb-4 box-shadow">
+							<div class="card-header">
+								<h4 class="my-0 font-weight-normal">{{ cur_day.day }}</h4>
+							</div>
+							<div class="card-body">
+								<table style="width:100%">
+									<tr>
+										<th></th>
+										<th>Hour</th>
+										<th>Temp</th>
+										<th>Humidity</th>
+									</tr>
+									<tr ng-if="cur_day.hour1">
+										<td><img src="http://openweathermap.org/img/wn/{{cur_day.hour1[3]}}.png"></td>
+										<td>{{cur_day.hour1[0]}}</td>
+										<td><b>{{cur_day.hour1[1]}}°</b>  {{cur_day.hour1[2]}}°</td>
+										<td>
+											<div class="progress">
+												<div class="progress-bar" role="progressbar" style="width: {{cur_day.hour1[5]}}%;" aria-valuenow="{{cur_day.hour1[5]}}" aria-valuemin="0" aria-valuemax="100">{{cur_day.hour1[5]}}%</div>
+											</div>
+										</td>
+									</tr>
+									<tr ng-if="cur_day.hour2">
+										<td><img src="http://openweathermap.org/img/wn/{{cur_day.hour2[3]}}.png"></td>
+										<td>{{cur_day.hour2[0]}}</td>
+										<td><b>{{cur_day.hour2[1]}}°</b>  {{cur_day.hour2[2]}}°</td>
+										<td>
+											<div class="progress">
+												<div class="progress-bar" role="progressbar" style="width: {{cur_day.hour2[5]}}%;" aria-valuenow="{{cur_day.hour2[5]}}" aria-valuemin="0" aria-valuemax="100">{{cur_day.hour2[5]}}%</div>
+											</div>
+										</td>
+									</tr>
+									<tr ng-if="cur_day.hour3">
+										<td><img src="http://openweathermap.org/img/wn/{{cur_day.hour3[3]}}.png"></td>
+										<td>{{cur_day.hour3[0]}}</td>
+										<td><b>{{cur_day.hour3[1]}}°</b>  {{cur_day.hour3[2]}}°</td>
+										<td>
+											<div class="progress">
+												<div class="progress-bar" role="progressbar" style="width: {{cur_day.hour3[5]}}%;" aria-valuenow="{{cur_day.hour3[5]}}" aria-valuemin="0" aria-valuemax="100">{{cur_day.hour3[5]}}%</div>
+											</div>
+										</td>
+									</tr>
+									<tr ng-if="cur_day.hour4">
+										<td><img src="http://openweathermap.org/img/wn/{{cur_day.hour4[3]}}.png"></td>
+										<td>{{cur_day.hour4[0]}}</td>
+										<td><b>{{cur_day.hour4[1]}}°</b>  {{cur_day.hour4[2]}}°</td>
+										<td>
+											<div class="progress">
+												<div class="progress-bar" role="progressbar" style="width: {{cur_day.hour4[5]}}%;" aria-valuenow="{{cur_day.hour4[5]}}" aria-valuemin="0" aria-valuemax="100">{{cur_day.hour4[5]}}%</div>
+											</div>
+										</td>
+									</tr>
+									<tr ng-if="cur_day.hour5">
+										<td><img src="http://openweathermap.org/img/wn/{{cur_day.hour5[3]}}.png"></td>
+										<td>{{cur_day.hour5[0]}}</td>
+										<td><b>{{cur_day.hour5[1]}}°</b>  {{cur_day.hour5[2]}}°</td>
+										<td>
+											<div class="progress">
+												<div class="progress-bar" role="progressbar" style="width: {{cur_day.hour5[5]}}%;" aria-valuenow="{{cur_day.hour5[5]}}" aria-valuemin="0" aria-valuemax="100">{{cur_day.hour5[5]}}%</div>
+											</div>
+										</td>
+									</tr>
+									<tr ng-if="cur_day.hour6">
+										<td><img src="http://openweathermap.org/img/wn/{{cur_day.hour6[3]}}.png"></td>
+										<td>{{cur_day.hour6[0]}}</td>
+										<td><b>{{cur_day.hour6[1]}}°</b>  {{cur_day.hour6[2]}}°</td>
+										<td>
+											<div class="progress">
+												<div class="progress-bar" role="progressbar" style="width: {{cur_day.hour6[5]}}%;" aria-valuenow="{{cur_day.hour6[5]}}" aria-valuemin="0" aria-valuemax="100">{{cur_day.hour6[5]}}%</div>
+											</div>
+										</td>
+									</tr>
+									<tr ng-if="cur_day.hour7">
+										<td><img src="http://openweathermap.org/img/wn/{{cur_day.hour7[3]}}.png"></td>
+										<td>{{cur_day.hour7[0]}}</td>
+										<td><b>{{cur_day.hour7[1]}}°</b>  {{cur_day.hour7[2]}}°</td>
+										<td>
+											<div class="progress">
+												<div class="progress-bar" role="progressbar" style="width: {{cur_day.hour7[5]}}%;" aria-valuenow="{{cur_day.hour7[5]}}" aria-valuemin="0" aria-valuemax="100">{{cur_day.hour7[5]}}%</div>
+											</div>
+										</td>
+									</tr>
+									<tr ng-if="cur_day.hour8">
+										<td><img src="http://openweathermap.org/img/wn/{{cur_day.hour8[3]}}.png"></td>
+										<td>{{cur_day.hour8[0]}}</td>
+										<td><b>{{cur_day.hour8[1]}}°</b>  {{cur_day.hour8[2]}}°</td>
+										<td>
+											<div class="progress">
+												<div class="progress-bar" role="progressbar" style="width: {{cur_day.hour8[5]}}%;" aria-valuenow="{{cur_day.hour8[5]}}" aria-valuemin="0" aria-valuemax="100">{{cur_day.hour8[5]}}%</div>
+											</div>
+										</td>
+									</tr>
+								</table>
+							</div>
+						</div>
+					</div>
+				 </div>
+			</div>
+		</div>
+	</body>
+	<script>
+	window.onload = function() {
+		setUser();
+		checkForUser();
+		checkCity();
+		LoginLogout();
+	}
+	</script>
+	<!-- Footer information -->
+		<div ng-include="'htm/footer.htm'"></div>
+<!-- End of Footer information -->
+</html>
