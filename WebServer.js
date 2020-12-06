@@ -48,12 +48,21 @@ var server = app.listen(6001, function() {
 	console.log('listening:', 6001);
 	console.log('***********************************');
 });
-   
+
+//------------------------------------------------------------------------------
+// localhost:6001/
+// The request will be redirected to the home page
+//------------------------------------------------------------------------------
 app.get('/', function(req,res){
 	return res.redirect('/home');
 });
 
+//------------------------------------------------------------------------------
+// localhost:6001/home
+// The Main Page of the Website
+//------------------------------------------------------------------------------
 app.get('/home', function(req, res){
+	// show the main page
 	var docname = "/htm/main.htm";
 	var options = {root: __dirname + '/public/'}
 	res.sendFile(docname, options, function (err) { // send this file
@@ -65,7 +74,12 @@ app.get('/home', function(req, res){
 	});
 });
 
+//------------------------------------------------------------------------------
+// localhost:6001/js2
+// Shows the 2nd Javascript exercise
+//------------------------------------------------------------------------------
 app.get('/js2', function(req, res){
+	// show the 2nd js exercise
 	var docname = "/htm/js_ex2.htm";
 	var options = {root: __dirname + '/public/'}
 	res.sendFile(docname, options, function (err) { // send this file
@@ -77,8 +91,12 @@ app.get('/js2', function(req, res){
 	});
 });
 
+//------------------------------------------------------------------------------
+// localhost:6001/weather
+// Shows the weather in a given city
+//------------------------------------------------------------------------------
 app.get('/weather', async function(req, res){
-	var city = req.query.city;
+	// show the weather forecast
 	var docname = "/htm/weather_forecast.htm";
 
 	var options = {	root: __dirname + '/public/'}
@@ -93,18 +111,24 @@ app.get('/weather', async function(req, res){
 	});
 });
 
+//------------------------------------------------------------------------------
+// localhost:6001/register
+// Shows the Register/SignUp form and creates the user if possible
+//------------------------------------------------------------------------------
 app.get('/register', async function(req, res){
+	// get url parameter username, passhash and superuser
 	var username = req.query.username;
 	var passhash = req.query.passhash;
 	var superuser = req.query.superuser;
-	var ret_msg;
+	// check if username and passhash are given in the URL
 	if (!checkUndefined(username) && !checkUndefined(passhash))
 	{
-		//var user_exists = await userExists(username);
+		// if username and passhash are given, check if the username already exists
 		var user_exists = await userExistsFB(username);
 		if (!user_exists)
 		{
-			 //await createUser(username,passhash,superuser);
+			// if no user with that username exists, create the user in the database and redirect to the login page
+			// also set response header 'Server-Success' to true
 			 await createUserFB(username,passhash,superuser);
 			 console.log('Redirecting to login');
 			 res.set('Server-Success', 'true');
@@ -112,13 +136,16 @@ app.get('/register', async function(req, res){
 		}
 		else
 		{
+			// if a user already exists, set response header 'Server-Success' to false
 			res.set('Server-Success', 'false');
 		}
 	}
 	else
 	{
+		//if username and password are given set response header 'Server-Success' to NA (not available)
 		res.set('Server-Success', 'NA');
 	}
+	// show the register form
 	var docname = "/htm/register.htm";
 	var options = {root: __dirname + '/public/'}
 	res.sendFile(docname, options, function (err) { // send this file
@@ -130,22 +157,29 @@ app.get('/register', async function(req, res){
 	});
 });
 
+//------------------------------------------------------------------------------
+// localhost:6001/login
+// Shows the Login/SignIn form and creates the user cookie if possible
+//------------------------------------------------------------------------------
 app.get('/login', async function(req, res){
+	// get url parameters username and passhash
 	var username = req.query.username;
 	var passhash = req.query.passhash;
-	var hdrs;
+	// check if username and passhash are given in the URL
 	if (!checkUndefined(username) && !checkUndefined(passhash))
 	{
-		console.log('Test: ', user)
-		//var user = await getUserIfCorrect(username,passhash);
+		// if both username and password are given, try to match against the database
+		// get the user info from the database
 		var user = await getUserFB(username,passhash);
 		if (user == '-')
 		{
+			// if login credentials are incorrect, set response header 'Server-Success' to false
 			res.set('Server-Success', 'false');
-			//res.set('Access-Control-Expose-Headers', 'Login-Success')
 		}
 		else
 		{
+			// if login credentials are correct, set response header 'Server-Success' to true
+			// also set the user cookie for 1800 seconds (30 minutes) and redirect to the home page
 			res.set('Server-Success', 'true');
 			setUserCookie(res,user,1800);
 			return res.redirect('/home');
@@ -153,10 +187,12 @@ app.get('/login', async function(req, res){
 	}
 	else
 	{
+		//if username and password are given set response header 'Server-Success' to NA (not available)
 		res.set('Server-Success', 'NA');
 	}
+	// show the login form
 	var docname = "/htm/login.htm";
-	var options = {root: __dirname + '/public/','headers':hdrs};
+	var options = {root: __dirname + '/public/'};
 	
 	res.sendFile(docname, options, function (err) { // send this file
 	   if (err) {
@@ -186,12 +222,19 @@ app.all('/proxy', function(req, res){
     });
 });
 
+//------------------------------------------------------------------------------
+// localhost:6001/loout
+// Deletes the user cookie and redirects to the main page
+//------------------------------------------------------------------------------
 app.get('/logout', async function(req, res){
 	deleteUserCookie(res);
 	return res.redirect('/home')
 });
 
-
+//------------------------------------------------------------------------------
+// Default route for the webserver
+// Shows a 404 error message
+//------------------------------------------------------------------------------
 app.get('*', function(req,res){
     var docname = "/htm/error_msg.htm";
 	var options = {root: __dirname + '/public/'}
@@ -204,8 +247,11 @@ app.get('*', function(req,res){
 	});
    });
 
-
+//------------------------------------------------------------------------------
+// Creates the user in the firebase database
+//------------------------------------------------------------------------------
 async function createUserFB( username, passhash, superuser ) {
+	// Create the user in the firebase database with attributes (username, passhash, superuser)
 	firebase.database().ref('users/' + username).set({
     username: username,
     passhash: passhash,
@@ -213,35 +259,50 @@ async function createUserFB( username, passhash, superuser ) {
   });
 }
 
+//------------------------------------------------------------------------------
+// Gets the user from the firebase database
+//------------------------------------------------------------------------------
 async function getUserFB ( username, passhash) {
+	// get user info from firebase
 	user = await firebase.database().ref('/users/' + username).once('value').then((snapshot) => {
 		var username_fb = (snapshot.val() && snapshot.val().username) || null;
 		var passhash_fb = (snapshot.val() && snapshot.val().passhash) || null;
 		var superuser_fb = (snapshot.val() && snapshot.val().superuser) || null;
+		//check if the passhash given matches with the passhash in the DB
 		if (passhash_fb != null && passhash_fb == passhash)
 		{
+			//if the hashes match return the username and superuser attributes
 			console.log('User correct', username);
 			return username_fb + ',' + superuser_fb;
 		}
 		else
 		{
+			// if the hashes dont match, simply return '-'
 			console.log('User incorrect', username);
 			return '-';
 		}
 	});
+	//return the user info
 	return user;
 }
 
+//------------------------------------------------------------------------------
+// Check if user exists in the firebase database
+//------------------------------------------------------------------------------
 async function userExistsFB( username ) {
+	// get user info from firebase
 	exists = await firebase.database().ref('/users/' + username).once('value').then((snapshot) => {
 		var username_fb = (snapshot.val() && snapshot.val().username) || null;
+		// check if the user exists in the database
 		if (username_fb != null)
 		{
+			//if user exists -> return true
 			console.log('User (' , username , ') does exist!');
 			return true;
 		}
 		else
 		{
+			//if user doesnt exist -> return false
 			console.log('User (' , username , ') doesnt exist!');
 			return false;
 		}
@@ -249,22 +310,27 @@ async function userExistsFB( username ) {
 	return exists;
 }
 
+//------------------------------------------------------------------------------
+// Set the user cookie
+//------------------------------------------------------------------------------
 function setUserCookie(res,user_id,seconds) {
 	console.log('Set User Cookie with ID: ', user_id);
+	//set the cookie with maxAge of given parameter seconds
 	res.cookie('user', user_id, { maxAge: seconds*1000 });
 }
 
+//------------------------------------------------------------------------------
+// Delete the user cookie
+//------------------------------------------------------------------------------
 function deleteUserCookie(res) {
 	console.log('Delete User Cookie');
+	//set/overwrite cookie with maxAge = 0ms (will delete itself immediately)
 	res.cookie('user','', { maxAge: 0 })
 }
 
-function getUserCookie(req) {
-	console.log('Check for User Cookie');
-	console.log('Cookies: ',req.cookies);
-	return req.cookies['user'];
-}
-
+//------------------------------------------------------------------------------
+// Checks if a variable is undefined or null
+//------------------------------------------------------------------------------
 function checkUndefined(variable) {
 	if (typeof variable !== 'undefined' && variable !== null)
 	{
