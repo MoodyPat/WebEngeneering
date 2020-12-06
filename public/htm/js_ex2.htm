@@ -111,9 +111,11 @@
 </body>
 <script>
 	window.onload = function() {
-		setUser();
-		checkForSuperuser();
-		LoginLogout();
+		setTimeout(function() {
+			setUser();
+			checkForSuperuser();
+			LoginLogout();
+		}, 100);
 	}
 	</script>
 </html>
