@@ -35,55 +35,61 @@ app.controller('WeatherForecast',['$scope','serverDataForecast', async function(
 			// always save the last date from forecase data (here: default "")
 			var old_date_str = "";
 			let day = "";
-			// get coordinates for current city
-			let coords = $scope.data.city.coord;
-			// show the map with given coordinates
-			setMap(coords);
-			
-			// loop through the forecast data
-			for (i = 0; i < $scope.data['list'].length; i++)
-			{
-				list = [];
-				// get the date and give the correct format (dd.mm)
-				var date = new Date($scope.data['list'][i]['dt']*1000)
-				var date_str = date.getDate() + '.' + date.getMonth() + '.';
+			try {
+					// get coordinates for current city
+				let coords = $scope.data.city.coord;
+				// show the map with given coordinates
+				setMap(coords);
 				
-				// get the current hour from the date
-				var hour_str = pad(date.getHours(),2);
-				// add the hour, max/min temperatur, windspeed, humidity and link to the weather icon to a list
-				list.push(hour_str);
-				list.push($scope.data['list'][i].main.temp_max);
-				list.push($scope.data['list'][i].main.temp_min);
-				list.push($scope.data['list'][i].weather[0].icon);
-				list.push($scope.data['list'][i].wind.speed);
-				list.push($scope.data['list'][i].main.humidity);
-				
-				// check if the date matches the last date
-				if (date_str != old_date_str)
+				// loop through the forecast data
+				for (i = 0; i < $scope.data['list'].length; i++)
 				{
-					// if dates dont match, check if the old_date is the default ("")
-					if (old_date_str != "")
+					list = [];
+					// get the date and give the correct format (dd.mm)
+					var date = new Date($scope.data['list'][i]['dt']*1000)
+					var date_str = date.getDate() + '.' + date.toLocaleString('default', { month: 'long' });
+					
+					// get the current hour from the date
+					var hour_str = pad(date.getHours(),2);
+					// add the hour, max/min temperatur, windspeed, humidity and link to the weather icon to a list
+					list.push(hour_str);
+					list.push($scope.data['list'][i].main.temp_max);
+					list.push($scope.data['list'][i].main.temp_min);
+					list.push($scope.data['list'][i].weather[0].icon);
+					list.push($scope.data['list'][i].wind.speed);
+					list.push($scope.data['list'][i].main.humidity);
+					
+					// check if the date matches the last date
+					if (date_str != old_date_str)
 					{
-						// if old_date not default add the Day-Object to the scope.list variable
-						$scope.list.push(day);
+						// if dates dont match, check if the old_date is the default ("")
+						if (old_date_str != "")
+						{
+							// if old_date not default add the Day-Object to the scope.list variable
+							$scope.list.push(day);
+						}
+						//create a new Day-Object and add the list to the Day-Object
+						day = new Day(date_str);
+						day.addHour(list);
+						
+						// set the old date as the current date
+						old_date_str = date_str;
+						
 					}
-					//create a new Day-Object and add the list to the Day-Object
-					day = new Day(date_str);
-					day.addHour(list);
-					
-					// set the old date as the current date
-					old_date_str = date_str;
-					
+					else
+					{
+						// if dates  match add the list to the Day-Object
+						day.addHour(list);
+					}
 				}
-				else
-				{
-					// if dates  match add the list to the Day-Object
-					day.addHour(list);
+				// add the last day to the scope.list variable
+				$scope.list.push(day);
+				console.log('List: ',$scope.list);
 				}
+			catch {
+				// An error will occure if no city is given!
+				console.log('WeatherForecast : No city given!');
 			}
-			// add the last day to the scope.list variable
-			$scope.list.push(day);
-			console.log('List: ',$scope.list);
 		})
 }])
 
@@ -93,7 +99,7 @@ function setMap( coord ) {
 	var mapLng =  parseFloat(coord.lon);
 var mapOptions = {
 	// set the zoom for the map
-    zoom: 16,
+    zoom: 10,
 	// center the map to given coordinates
     center: {lat: mapLat, lng: mapLng},
 }
@@ -133,6 +139,39 @@ function Day(day) {
 		else if (!this.hour7) {this.hour7 = elmnt;}
 		else if (!this.hour8) {this.hour8 = elmnt;}
 	}
+	
+	// return the max temperatur if it is defined, otherwise return -999
+	this.getMaxValue = function(param) {
+		try {
+			return param[1]
+		}
+		catch {
+			return -999
+		}
+	}
+	
+	// get the maximum temperature during the day
+	this.maxTemp = function(elmnt) {
+		return Math.max(this.getMaxValue(this.hour1),this.getMaxValue(this.hour2),this.getMaxValue(this.hour3),this.getMaxValue(this.hour4),this.getMaxValue(this.hour5),this.getMaxValue(this.hour6),this.getMaxValue(this.hour7),this.getMaxValue(this.hour8));
+	}
+	
+	
+	
+	// return the min temperatur if it is defined, otherwise return 999
+	this.getMinValue = function(param) {
+		try {
+			return param[1]
+		}
+		catch {
+			return 999
+		}
+	}
+	
+	// get the minimum temperature during the day
+	this.minTemp = function(elmnt) {
+		return Math.min(this.getMinValue(this.hour1),this.getMinValue(this.hour2),this.getMinValue(this.hour3),this.getMinValue(this.hour4),this.getMinValue(this.hour5),this.getMinValue(this.hour6),this.getMinValue(this.hour7),this.getMinValue(this.hour8));
+	}
+	
 }
 
 //------------------------------------------------------------------------------

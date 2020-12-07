@@ -50,7 +50,8 @@
 					<div class="card-deck mb-3 text-center">
 						<div class="card mb-4 box-shadow">
 							<div class="card-header">
-								<h4 class="my-0 font-weight-normal">{{ cur_day.day }}</h4>
+								<h2 class="my-0 font-weight-normal">{{ cur_day.day }} </h2>
+								<h4 class="my-0 font-weight-normal"> <b>{{cur_day.maxTemp()}}°</b>  {{cur_day.minTemp()}}°</h4>
 							</div>
 							<div class="card-body">
 								<table style="width:100%">

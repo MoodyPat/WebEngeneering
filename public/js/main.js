@@ -146,17 +146,24 @@ function LoginLogout() {
 	{
 		// if no user is logged in -> display all login elements and hide all logout elements
 		login_elmnt.style.display = 'block';
-		login_elmnt_home.style.display = 'block';
 		logout_elmnt.style.display = 'none';
-		logout_elmnt_home.style.display = 'none';
+		try {
+			login_elmnt_home.style.display = 'block';
+			logout_elmnt_home.style.display = 'none';
+		}
+		catch {}
 	}
 	else
 	{
 		// if no user is logged in -> display all logout elements and hide all login elements
 		login_elmnt.style.display = 'none';
-		login_elmnt_home.style.display = 'none';
 		logout_elmnt.style.display = 'block';
-		logout_elmnt_home.style.display = 'block';
+		try {
+			login_elmnt_home.style.display = 'none';
+			logout_elmnt_home.style.display = 'block';
+		}
+		catch {}
+		
 	}
 }
 
